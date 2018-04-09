@@ -1,0 +1,19 @@
+# Api Monitor Configuration
+
+api:
+  baseUrl: "https://etg2.gzcustoms.gov.cn/nsgxpt-ws"
+  loginPath: "/auth/portal.do"
+  searchCompanyPath: "/api/v1/data/searchCompany.do"
+
+login:
+  account: "fsnhkf"
+  password: "rt0adc3949ba59abbe56e057f20f898f"
+
+interval: 10
+
+notify:
+  url: "http://172.7.11.25:3004/sms"
+  mobiles:
+    - "18665559889"
+    - "13500021401"
+  content: "Connection to SAIC (foshan) is broken."
