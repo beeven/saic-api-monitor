@@ -1,17 +1,16 @@
-// +build windows
-
 package main
 
 import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"golang.org/x/sys/windows/svc"
-	"strings"
 )
 
-var config Configuration
+var config configuration
 
 func usage(errmsg string) {
 	fmt.Fprintf(os.Stderr,
@@ -25,7 +24,12 @@ func usage(errmsg string) {
 
 func main() {
 
-	err := config.fromFile("config.yml")
+	exepath, err := exePath()
+	if err != nil {
+		log.Fatalf("failed to get executable path: %v", err)
+		return
+	}
+	err = config.fromFile(filepath.Dir(exepath) + "\\config.yml")
 	if err != nil {
 		log.Fatalf("failed to read from config.yml %v", err)
 		return

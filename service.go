@@ -1,10 +1,11 @@
 package main
 
 import (
-	"golang.org/x/sys/windows/svc/debug"
-	"golang.org/x/sys/windows/svc"
-	"time"
 	"fmt"
+	"time"
+
+	"golang.org/x/sys/windows/svc"
+	"golang.org/x/sys/windows/svc/debug"
 	"golang.org/x/sys/windows/svc/eventlog"
 )
 
@@ -21,38 +22,38 @@ func (m *myservice) Execute(args []string, r <-chan svc.ChangeRequest, changes c
 	changes <- svc.Status{State: svc.Running, Accepts: cmdsAccepted}
 	notifier := notifier{}
 
-	loop:
-		for {
-			select {
-			case <- tick:
-				err := checkLogin()
-				if err != nil {
-					elog.Error(1, fmt.Sprintf("API check failed: %v", err))
-					notifier.NotifyConnectionStatus()
-				} else {
-					elog.Info(1, fmt.Sprint("API check succeeded."))
-				}
-			case c := <- r:
-				switch c.Cmd {
-				case svc.Interrogate:
-					changes <- c.CurrentStatus
-					time.Sleep(100*time.Millisecond)
-					changes <- c.CurrentStatus
-				case svc.Stop, svc.Shutdown:
-					break loop
-				case svc.Pause:
-					changes <- svc.Status{State: svc.Paused, Accepts: cmdsAccepted}
-					tick = serviceTick
-				case svc.Continue:
-					changes <- svc.Status{State: svc.Running, Accepts: cmdsAccepted}
-					tick = workerTick
-				default:
-					elog.Error(1, fmt.Sprintf("unexpected control request #%d", c))
-				}
+loop:
+	for {
+		select {
+		case <-tick:
+			err := checkLogin()
+			if err != nil {
+				elog.Error(1, fmt.Sprintf("API check failed: %v", err))
+				notifier.NotifyConnectionStatus()
+			} else {
+				elog.Info(1, fmt.Sprint("API check succeeded."))
+			}
+		case c := <-r:
+			switch c.Cmd {
+			case svc.Interrogate:
+				changes <- c.CurrentStatus
+				time.Sleep(100 * time.Millisecond)
+				changes <- c.CurrentStatus
+			case svc.Stop, svc.Shutdown:
+				break loop
+			case svc.Pause:
+				changes <- svc.Status{State: svc.Paused, Accepts: cmdsAccepted}
+				tick = serviceTick
+			case svc.Continue:
+				changes <- svc.Status{State: svc.Running, Accepts: cmdsAccepted}
+				tick = workerTick
+			default:
+				elog.Error(1, fmt.Sprintf("unexpected control request #%d", c))
 			}
 		}
-		changes <- svc.Status{State: svc.StopPending}
-		return
+	}
+	changes <- svc.Status{State: svc.StopPending}
+	return
 }
 
 func runService(name string, isDebug bool) {
@@ -62,6 +63,7 @@ func runService(name string, isDebug bool) {
 	} else {
 		elog, err = eventlog.Open(name)
 		if err != nil {
+			//log.Fatalf("create eventlog failed: %v", err)
 			return
 		}
 	}

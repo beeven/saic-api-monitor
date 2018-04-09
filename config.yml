@@ -2,7 +2,7 @@
 
 api:
   baseUrl: "https://etg2.gzcustoms.gov.cn/nsgxpt-ws"
-  loginPath: "/auth/portal.do"
+  loginPath: "/auth/portal.jsp"
   searchCompanyPath: "/api/v1/data/searchCompany.do"
 
 login:
@@ -11,9 +11,9 @@ login:
 
 interval: 10
 
-notify:
-  url: "http://172.7.11.25:3004/sms"
-  mobiles:
-    - "18665559889"
-    - "13500021401"
-  content: "Connection to SAIC (foshan) is broken."
+# notify:
+#   url: "http://172.7.11.25:3004/sms"
+#   mobiles:
+#     - "18665559889"
+#     - "13500021401"
+#   content: "Connection to SAIC (foshan) is broken."

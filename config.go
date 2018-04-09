@@ -9,7 +9,7 @@ import (
 // A struct represent configurations.
 // api: api addresses
 // interval: check interval in ms.
-type Configuration struct {
+type configuration struct {
 	API struct {
 		BaseUrl           string `yaml:"baseUrl"`
 		LoginPath         string `yaml:"loginPath"`
@@ -20,15 +20,15 @@ type Configuration struct {
 		Password string `url:"password"`
 	}
 	Interval int
-	Notify struct {
-		Url	string `yaml:"url"`
-		Mobiles []string	`yaml:"mobiles"`
-		Content string	`yaml:"content"`
+	Notify   struct {
+		Url     string   `yaml:"url"`
+		Mobiles []string `yaml:"mobiles"`
+		Content string   `yaml:"content"`
 	}
 }
 
 // FromFile Make configuration from file
-func (c *Configuration) fromFile(path string) error {
+func (c *configuration) fromFile(path string) error {
 	bs, err := ioutil.ReadFile(path)
 	if err != nil {
 		return err

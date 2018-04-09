@@ -1,10 +1,10 @@
 package main
 
 import (
-	"strings"
+	"bytes"
 	"encoding/json"
 	"net/http"
-	"bytes"
+	"strings"
 )
 
 type notifier struct{}

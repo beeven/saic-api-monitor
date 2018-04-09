@@ -1,15 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
-	"fmt"
-	"golang.org/x/sys/windows/svc/mgr"
+
 	"golang.org/x/sys/windows/svc/eventlog"
+	"golang.org/x/sys/windows/svc/mgr"
 )
 
 func exePath() (string, error) {
-	prog := os.Args[0]
+	prog, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
 	p, err := filepath.Abs(prog)
 	if err != nil {
 		return "", err
@@ -54,7 +58,7 @@ func installService(name, desc string) error {
 		return err
 	}
 	defer s.Close()
-	err = eventlog.InstallAsEventCreate(name, eventlog.Error | eventlog.Warning | eventlog.Info)
+	err = eventlog.InstallAsEventCreate(name, eventlog.Error|eventlog.Warning|eventlog.Info)
 	if err != nil {
 		s.Delete()
 		return fmt.Errorf("SetupEventLogSource() failed: %s", err)
